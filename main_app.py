@@ -22,8 +22,8 @@ class FirstScr(Screen):
         txt_age = Label(text = "Введите возраст:")
         txt = Label(text = txt_instruction)
 
-        in_name = TextInput(multiline = False)
-        in_age = TextInput(text = "7", multiline = False)
+        self.in_name = TextInput(multiline = False)
+        self.in_age = TextInput(text = "7", multiline = False)
 
         main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
         name_line = BoxLayout(height = "30sp", size_hint = (0.8, None))
@@ -31,9 +31,9 @@ class FirstScr(Screen):
         btn.on_press = self.next
 
         name_line.add_widget(txt_name)
-        name_line.add_widget(in_name)
+        name_line.add_widget(self.in_name)
         age_line.add_widget(txt_age)
-        age_line.add_widget(in_age)
+        age_line.add_widget(self.in_age)
 
         main_line.add_widget(txt)
         main_line.add_widget(name_line)
@@ -54,14 +54,14 @@ class SecondScr(Screen):
         txt = Label(text = txt_test1)
         txt_result = Label(text = "Введите результат:")
 
-        in_result_1 = TextInput(multiline = False)
+        self.in_result_1 = TextInput(multiline = False)
 
         main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
         second_line = BoxLayout(height = "30sp", size_hint = (0.8, None))
         btn.on_press = self.next
 
         second_line.add_widget(txt_result)
-        second_line.add_widget(in_result_1)
+        second_line.add_widget(self.in_result_1)
 
         main_line.add_widget(txt)
         main_line.add_widget(second_line)
@@ -70,12 +70,13 @@ class SecondScr(Screen):
 
     def next(self):
         self.manager.transition.direction = 'left'
+        user_data.result_1 = self.in_result_1
         self.manager.current = 'third'
 
 class ThirdScr(Screen):
     def __init__(self, name='third'):
         super().__init__(name=name)
-        btn = Button(text="3")
+        btn = Button(text="Продолжить")
         btn.on_press = self.next
         self.add_widget(btn)
 
