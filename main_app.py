@@ -70,7 +70,7 @@ class SecondScr(Screen):
 
     def next(self):
         self.manager.transition.direction = 'left'
-        user_data.result_1 = self.in_result_1
+        user_data.result_1 = int(self.in_result_1.text)
         self.manager.current = 'third'
 
 class ThirdScr(Screen):
@@ -120,8 +120,9 @@ class FourthScr(Screen):
 
     def next(self):
         self.manager.transition.direction = 'left'
-        user_data.result_2 = self.in_result_2.text
-        user_data.result_3 = self.in_result_3.text
+        user_data.result_2 = int(self.in_result_2.text)
+        user_data.result_3 = int(self.in_result_3.text)
+        user_data.ruf_ind.text += str(ruffier_idex(user_data.result_1,user_data.result_2,user_data.result_3))
         user_data.ruf_uns.text = "хорошее"
         self.manager.current = 'fifth'
 
@@ -129,27 +130,35 @@ class FifthScr(Screen):
     def __init__(self, name='fifth'):
         super().__init__(name=name)
         btn_end = Button(text="Завершить",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
-        #btn_again = Button(text="Начать сначала",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
+        btn_again = Button(text="Начать сначала",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
         user_data.ruf_ind = txt_ruf_index = Label(text = "Ваш индекс Руфье:")
         txt = Label(text = "Работоспособность сердца:")
         user_data.ruf_uns = txt_ruf_unswer = Label(text = "...")
 
-        main_line = BoxLayout(orientation = "vertical", padding = 275, spacing = 10)
-        #second_line = BoxLayout(padding = 10, spacing = 10)
-        #btn_again.on_press = self.next
+        main_line = BoxLayout(orientation = "vertical", padding = 25, spacing = 10)
+        txt_line = BoxLayout(orientation = "vertical", padding = 2, spacing = 10, size_hint = (None, 0.1),pos_hint = {"center_x":0.5})
+        second_line = BoxLayout(padding = 10, spacing = 10)
+        btn_again.on_press = self.again
+        btn_end.on_press = self.exit
 
-        main_line.add_widget(txt_ruf_index)
-        main_line.add_widget(txt)
-        main_line.add_widget(txt_ruf_unswer)
-        main_line.add_widget(btn_end)
-        #second_line.add_widget(btn_again)
-        #second_line.add_widget(btn_end)
-        #main_line.add_widget(second_line)
+        txt_line.add_widget(txt_ruf_index)
+        txt_line.add_widget(txt)
+        txt_line.add_widget(txt_ruf_unswer)
+        #main_line.add_widget(btn_end)
+        second_line.add_widget(btn_again)
+        second_line.add_widget(btn_end)
+        main_line.add_widget(txt_line)
+        main_line.add_widget(second_line)
         self.add_widget(main_line)
 
-    def next(self):
+    def again(self):
+        user_data.name = user_data.age = user_data.ruf_ind = user_data.ruf_uns = None
         self.manager.transition.direction = 'left'
         self.manager.current = 'first'
+
+    def exit(self):
+        print("Хорошего давления")
+        app.stop()
 
 class MyApp(App):
     def build(self):
