@@ -128,18 +128,23 @@ class FourthScr(Screen):
 class FifthScr(Screen):
     def __init__(self, name='fifth'):
         super().__init__(name=name)
-        btn = Button(text="удалить кнопку")
+        btn_end = Button(text="Завершить",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
+        #btn_again = Button(text="Начать сначала",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
         user_data.ruf_ind = txt_ruf_index = Label(text = "Ваш индекс Руфье:")
-        txt = Label(text = "Работоспособность вашего сердца:")
+        txt = Label(text = "Работоспособность сердца:")
         user_data.ruf_uns = txt_ruf_unswer = Label(text = "...")
 
-        main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
-        btn.on_press = self.next
+        main_line = BoxLayout(orientation = "vertical", padding = 275, spacing = 10)
+        #second_line = BoxLayout(padding = 10, spacing = 10)
+        #btn_again.on_press = self.next
 
         main_line.add_widget(txt_ruf_index)
         main_line.add_widget(txt)
         main_line.add_widget(txt_ruf_unswer)
-        main_line.add_widget(btn)
+        main_line.add_widget(btn_end)
+        #second_line.add_widget(btn_again)
+        #second_line.add_widget(btn_end)
+        #main_line.add_widget(second_line)
         self.add_widget(main_line)
 
     def next(self):
