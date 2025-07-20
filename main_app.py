@@ -11,7 +11,7 @@ from ruffier import *
 #from sits import*
 
 class UserData():
-    name = age = ruf_ind = ruf_uns = error = previus = None
+    name = age = ruf_ind = ruf_uns = error = previus = result_1 = result_2 = result_3 = None
 user_data = UserData()
 
 def check_int(str_int):
@@ -85,7 +85,7 @@ class SecondScr(Screen):
             self.manager.transition.direction = 'down'
             self.manager.current = 'error'
         else:
-            user_data.result_1 = result_1
+            user_data.result_1 = self.in_result_1
             self.manager.current = 'third'
 
 class ThirdScr(Screen):
@@ -136,24 +136,27 @@ class FourthScr(Screen):
     def next(self):
         result_2 = check_int(self.in_result_2.text)
         result_3 = check_int(self.in_result_3.text)
+        correct = True
         if result_2 == False or result_2 < 0:
             self.in_result_2.text = ""
+            correct = False
             user_data.error.text = "Введите целое число которое не будет меньше нуля"
             user_data.previus = "fourth"
             self.manager.transition.direction = 'down'
             self.manager.current = 'error'
 
-        elif result_3 == False or result_3 < 0:
+        if result_3 == False or result_3 < 0:
             self.in_result_3.text = ""
+            correct = False
             user_data.error.text = "Введите целое число которое не будет меньше нуля"
             user_data.previus = "fourth"
             self.manager.transition.direction = 'down'
             self.manager.current = 'error'
 
-        else:
-            user_data.result_2 = result_2
-            user_data.result_3 = result_3
-            r_index = ruffier_index(user_data.result_1,user_data.result_2,user_data.result_3)
+        if correct == True:
+            user_data.result_2 = self.in_result_2
+            user_data.result_3 = self.in_result_3
+            r_index = ruffier_index(int(user_data.result_1.text),int(user_data.result_2.text),int(user_data.result_3.text))
             user_data.ruf_ind.text += str(r_index)
             level = neud_level(user_data.age)
             index_result = ruffier_result(r_index, level)
@@ -188,7 +191,8 @@ class FifthScr(Screen):
         self.add_widget(main_line)
 
     def again(self):
-        user_data.name = user_data.age = user_data.ruf_ind = user_data.ruf_uns = None
+        u = user_data
+        u.name = u.age =  u.ruf_ind.text = u.ruf_uns.text = u.result_1.text = u.result_2.text = u.result_3.text = ""
         self.manager.transition.direction = 'left'
         self.manager.current = 'first'
 
