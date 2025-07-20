@@ -6,12 +6,19 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.textinput import TextInput
 from instructions import *
+from ruffier import *
 #from runner import*
 #from sits import*
 
 class UserData():
-    name = age = ruf_ind = ruf_uns = None
+    name = age = ruf_ind = ruf_uns = error = previus = None
 user_data = UserData()
+
+def check_int(str_int):
+    try:
+        return int(str_int)
+    except:
+        return False
 
 class FirstScr(Screen):
     def __init__(self, name='first'):
@@ -70,8 +77,16 @@ class SecondScr(Screen):
 
     def next(self):
         self.manager.transition.direction = 'left'
-        user_data.result_1 = int(self.in_result_1.text)
-        self.manager.current = 'third'
+        result_1 = check_int(self.in_result_1.text)
+        if result_1 == False or result_1 < 0:
+            self.in_result_1.text = ""
+            user_data.error.text = "Введите целое число которое не будет меньше нуля"
+            user_data.previus = "second"
+            self.manager.transition.direction = 'down'
+            self.manager.current = 'error'
+        else:
+            user_data.result_1 = result_1
+            self.manager.current = 'third'
 
 class ThirdScr(Screen):
     def __init__(self, name='third'):
@@ -119,12 +134,33 @@ class FourthScr(Screen):
         self.add_widget(main_line)
 
     def next(self):
-        self.manager.transition.direction = 'left'
-        user_data.result_2 = int(self.in_result_2.text)
-        user_data.result_3 = int(self.in_result_3.text)
-        user_data.ruf_ind.text += str(ruffier_idex(user_data.result_1,user_data.result_2,user_data.result_3))
-        user_data.ruf_uns.text = "хорошее"
-        self.manager.current = 'fifth'
+        result_2 = check_int(self.in_result_2.text)
+        result_3 = check_int(self.in_result_3.text)
+        if result_2 == False or result_2 < 0:
+            self.in_result_2.text = ""
+            user_data.error.text = "Введите целое число которое не будет меньше нуля"
+            user_data.previus = "fourth"
+            self.manager.transition.direction = 'down'
+            self.manager.current = 'error'
+
+        elif result_3 == False or result_3 < 0:
+            self.in_result_3.text = ""
+            user_data.error.text = "Введите целое число которое не будет меньше нуля"
+            user_data.previus = "fourth"
+            self.manager.transition.direction = 'down'
+            self.manager.current = 'error'
+
+        else:
+            user_data.result_2 = result_2
+            user_data.result_3 = result_3
+            r_index = ruffier_index(user_data.result_1,user_data.result_2,user_data.result_3)
+            user_data.ruf_ind.text += str(r_index)
+            level = neud_level(user_data.age)
+            index_result = ruffier_result(r_index, level)
+            user_data.ruf_uns.text = txt_res[index_result]
+
+            self.manager.transition.direction = 'left'
+            self.manager.current = 'fifth'
 
 class FifthScr(Screen):
     def __init__(self, name='fifth'):
@@ -160,6 +196,24 @@ class FifthScr(Screen):
         print("Хорошего давления")
         app.stop()
 
+class ErrorScr(Screen):
+    def __init__(self, name='error'):
+        super().__init__(name=name)
+        btn = Button(text="Вернуться",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
+        self.txt = Label(text = "ошибка")
+        user_data.error = self.txt
+
+        main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
+        btn.on_press = self.next
+
+        main_line.add_widget(self.txt)
+        main_line.add_widget(btn)
+        self.add_widget(main_line)
+
+    def next(self):
+        self.manager.transition.direction = 'up'
+        self.manager.current = user_data.previus
+
 class MyApp(App):
     def build(self):
         sm = ScreenManager()
@@ -168,6 +222,7 @@ class MyApp(App):
         sm.add_widget(ThirdScr())
         sm.add_widget(FourthScr())
         sm.add_widget(FifthScr())
+        sm.add_widget(ErrorScr())
         return sm
 
 app = MyApp()
