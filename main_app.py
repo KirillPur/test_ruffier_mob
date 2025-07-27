@@ -7,6 +7,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.textinput import TextInput
 from instructions import *
 from ruffier import *
+from seconds import *
 #from runner import*
 #from sits import*
 
@@ -57,7 +58,11 @@ class FirstScr(Screen):
 class SecondScr(Screen):
     def __init__(self, name='second'):
         super().__init__(name=name)
-        btn = Button(text="Продолжить",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
+        self.lbl_sec = Seconds(15)
+        self.lbl_sec.bind(done=self.sec_finished)
+        self.stage = False
+
+        self.btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
         txt = Label(text = txt_test1)
         txt_result = Label(text = "Введите результат:")
 
@@ -65,28 +70,41 @@ class SecondScr(Screen):
 
         main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
         second_line = BoxLayout(height = "30sp", size_hint = (0.8, None))
-        btn.on_press = self.next
+        self.btn.on_press = self.next
 
         second_line.add_widget(txt_result)
         second_line.add_widget(self.in_result_1)
 
         main_line.add_widget(txt)
+        main_line.add_widget(self.lbl_sec)
         main_line.add_widget(second_line)
-        main_line.add_widget(btn)
+        main_line.add_widget(self.btn)
         self.add_widget(main_line)
+
+    def sec_finished(self, *args):
+        self.stage = True
+        self.in_result_1.set_disabled(False)
+        self.btn.set_disabled(False)
+        self.btn.text = "Продолжить"
+        return False
 
     def next(self):
         self.manager.transition.direction = 'left'
         result_1 = check_int(self.in_result_1.text)
-        if result_1 == False or result_1 < 0:
-            self.in_result_1.text = ""
-            user_data.error.text = "Введите целое число которое не будет меньше нуля"
-            user_data.previus = "second"
-            self.manager.transition.direction = 'down'
-            self.manager.current = 'error'
+        if self.stage == False:
+            self.in_result_1.set_disabled(True)
+            self.btn.set_disabled(True)
+            self.lbl_sec.start()
         else:
-            user_data.result_1 = self.in_result_1
-            self.manager.current = 'third'
+            if result_1 == False or result_1 < 0:
+                self.in_result_1.text = ""
+                user_data.error.text = "Введите целое число которое не будет меньше нуля"
+                user_data.previus = "second"
+                self.manager.transition.direction = 'down'
+                self.manager.current = 'error'
+            else:
+                user_data.result_1 = self.in_result_1
+                self.manager.current = 'third'
 
 class ThirdScr(Screen):
     def __init__(self, name='third'):
@@ -108,8 +126,13 @@ class ThirdScr(Screen):
 class FourthScr(Screen):
     def __init__(self, name='fourth'):
         super().__init__(name=name)
-        btn = Button(text="Узнать результат",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
+        self.lbl_sec = Seconds(15)
+        self.lbl_sec.bind(done=self.sec_finished)
+        self.stage = 0
+
+        self.btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
         txt = Label(text = txt_instruction)
+        self.txt_need_to_do = Label(text = "Считайте пульс")
         txt_result_2 = Label(text = "Результат:")
         txt_result_3 = Label(text = "Результат после отдыха:")
         txt = Label(text = txt_test3)
@@ -120,7 +143,7 @@ class FourthScr(Screen):
         main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
         result_2_line = BoxLayout(height = "30sp", size_hint = (0.8, None))
         result_3_line = BoxLayout(height = "30sp", size_hint = (0.8, None))
-        btn.on_press = self.next
+        self.btn.on_press = self.next
 
         result_2_line.add_widget(txt_result_2)
         result_2_line.add_widget(self.in_result_2)
@@ -128,42 +151,68 @@ class FourthScr(Screen):
         result_3_line.add_widget(self.in_result_3)
 
         main_line.add_widget(txt)
+        main_line.add_widget(self.txt_need_to_do)
+        main_line.add_widget(self.lbl_sec)
         main_line.add_widget(result_2_line)
         main_line.add_widget(result_3_line)
-        main_line.add_widget(btn)
+        main_line.add_widget(self.btn)
         self.add_widget(main_line)
+    
+    def sec_finished(self, *args):
+        if self.lbl_sec.done == True:
+            if self.stage == 0:
+                self.stage = 1
+                self.txt_need_to_do.text = "Отдыхайте"
+                self.lbl_sec.restart(30)
+                self.in_result_2.set_disabled(False)
+            elif self.stage == 1:
+                self.stage = 2
+                self.txt_need_to_do.text = "Считайте пульс"
+                self.lbl_sec.restart(15)
+            elif self.stage == 2:
+                self.in_result_3.set_disabled(False)
+                self.btn.set_disabled(False)
+                self.btn.text = "Узнать результат"
+                return False
 
     def next(self):
-        result_2 = check_int(self.in_result_2.text)
-        result_3 = check_int(self.in_result_3.text)
-        correct = True
-        if result_2 == False or result_2 < 0:
-            self.in_result_2.text = ""
-            correct = False
-            user_data.error.text = "Введите целое число которое не будет меньше нуля"
-            user_data.previus = "fourth"
-            self.manager.transition.direction = 'down'
-            self.manager.current = 'error'
+        if self.stage == 0:
+            self.btn.set_disabled(True)
+            self.in_result_2.set_disabled(True)
+            self.in_result_3.set_disabled(True)
+            self.lbl_sec.start()
+        
+        else:
+            result_2 = check_int(self.in_result_2.text)
+            result_3 = check_int(self.in_result_3.text)
+            correct = True
+            if result_2 == False or result_2 < 0:
+                self.in_result_2.text = ""
+                correct = False
+                user_data.error.text = "Введите целое число которое не будет меньше нуля"
+                user_data.previus = "fourth"
+                self.manager.transition.direction = 'down'
+                self.manager.current = 'error'
 
-        if result_3 == False or result_3 < 0:
-            self.in_result_3.text = ""
-            correct = False
-            user_data.error.text = "Введите целое число которое не будет меньше нуля"
-            user_data.previus = "fourth"
-            self.manager.transition.direction = 'down'
-            self.manager.current = 'error'
+            if result_3 == False or result_3 < 0:
+                self.in_result_3.text = ""
+                correct = False
+                user_data.error.text = "Введите целое число которое не будет меньше нуля"
+                user_data.previus = "fourth"
+                self.manager.transition.direction = 'down'
+                self.manager.current = 'error'
 
-        if correct == True:
-            user_data.result_2 = self.in_result_2
-            user_data.result_3 = self.in_result_3
-            r_index = ruffier_index(int(user_data.result_1.text),int(user_data.result_2.text),int(user_data.result_3.text))
-            user_data.ruf_ind.text += str(r_index)
-            level = neud_level(user_data.age)
-            index_result = ruffier_result(r_index, level)
-            user_data.ruf_uns.text = txt_res[index_result]
+            if correct == True:
+                user_data.result_2 = self.in_result_2
+                user_data.result_3 = self.in_result_3
+                r_index = ruffier_index(int(user_data.result_1.text),int(user_data.result_2.text),int(user_data.result_3.text))
+                user_data.ruf_ind.text += str(r_index)
+                level = neud_level(user_data.age)
+                index_result = ruffier_result(r_index, level)
+                user_data.ruf_uns.text = txt_res[index_result]
 
-            self.manager.transition.direction = 'left'
-            self.manager.current = 'fifth'
+                self.manager.transition.direction = 'left'
+                self.manager.current = 'fifth'
 
 class FifthScr(Screen):
     def __init__(self, name='fifth'):
