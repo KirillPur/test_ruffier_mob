@@ -181,7 +181,7 @@ class FourthScr(Screen):
             if self.stage == 0:
                 self.stage = 1
                 self.txt_need_to_do.text = "Отдыхайте"
-                self.lbl_sec.restart(45)#45
+                self.lbl_sec.restart(30)#30
                 self.in_result_2.set_disabled(False)
             elif self.stage == 1:
                 self.stage = 2
@@ -261,9 +261,25 @@ class FifthScr(Screen):
         self.add_widget(main_line)
 
     def again(self):
-        user_data.ruf_ind = user_data.ruf_uns = user_data.error = user_data.previus = None
+        user_data.ruf_ind.text = ""
+        user_data.ruf_uns.text = ""
+        #user_data.previus = None
         
-        app.sm.get_screen("second").lbl_sec.restart(15)#15
+        app.sm.get_screen("second").stage = False
+        app.sm.get_screen("second").lbl_sec.reset(15)#15
+        app.sm.get_screen("second").btn.text = "Начать"
+        app.sm.get_screen("second").in_result_1.set_disabled(True)
+
+        app.sm.get_screen("third").stage = False
+        app.sm.get_screen("third").lbl_sec.reset(45)#45
+        app.sm.get_screen("third").btn.text = "Начать"
+        
+        app.sm.get_screen("fourth").stage = False
+        app.sm.get_screen("fourth").lbl_sec.reset(15)#15
+        app.sm.get_screen("fourth").btn.text = "Начать"
+        app.sm.get_screen("fourth").in_result_2.set_disabled(True)
+        app.sm.get_screen("fourth").in_result_3.set_disabled(True)
+
         self.manager.transition.direction = 'left'
         self.manager.current = 'first'
 
