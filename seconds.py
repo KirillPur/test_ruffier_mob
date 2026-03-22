@@ -1,4 +1,3 @@
-# напиши модуль для реализации секундомера
 from kivy.uix.label import Label
 from kivy.clock import Clock
 from kivy.properties import BooleanProperty

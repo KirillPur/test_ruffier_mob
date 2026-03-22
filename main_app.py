@@ -9,8 +9,9 @@ from instructions import *
 from ruffier import *
 from seconds import *
 #from runner import*
+from kivy.core.window import Window
 #from sits import*
-
+Window.size = (450,800)
 class UserData():
     name = age = ruf_ind = ruf_uns = error = previus = result_1 = result_2 = result_3 = None
 user_data = UserData()
@@ -58,7 +59,7 @@ class FirstScr(Screen):
 class SecondScr(Screen):
     def __init__(self, name='second'):
         super().__init__(name=name)
-        self.lbl_sec = Seconds(15)
+        self.lbl_sec = Seconds(15)#15
         self.lbl_sec.bind(done=self.sec_finished)
         self.stage = False
 
@@ -67,6 +68,7 @@ class SecondScr(Screen):
         txt_result = Label(text = "Введите результат:")
 
         self.in_result_1 = TextInput(multiline = False)
+        self.in_result_1.set_disabled(True)
 
         main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
         second_line = BoxLayout(height = "30sp", size_hint = (0.8, None))
@@ -109,24 +111,38 @@ class SecondScr(Screen):
 class ThirdScr(Screen):
     def __init__(self, name='third'):
         super().__init__(name=name)
-        btn = Button(text="Продолжить",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
+        self.lbl_sec = Seconds(45)#45
+        self.lbl_sec.bind(done=self.sec_finished)
+        self.stage = False
+        self.btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
         txt = Label(text = txt_sits)
 
         main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
-        btn.on_press = self.next
+        self.btn.on_press = self.next
 
         main_line.add_widget(txt)
-        main_line.add_widget(btn)
+        main_line.add_widget(self.lbl_sec)
+        main_line.add_widget(self.btn)
         self.add_widget(main_line)
+    
+    def sec_finished(self, *args):
+        self.stage = True
+        self.btn.text = "Продолжить"
+        self.btn.set_disabled(False)
+        return False
 
     def next(self):
-        self.manager.transition.direction = 'left'
-        self.manager.current = 'fourth'
+        if self.stage == False:
+            self.btn.set_disabled(True)
+            self.lbl_sec.start()
+        else:
+            self.manager.transition.direction = 'left'
+            self.manager.current = 'fourth'
 
 class FourthScr(Screen):
     def __init__(self, name='fourth'):
         super().__init__(name=name)
-        self.lbl_sec = Seconds(15)
+        self.lbl_sec = Seconds(15)#15
         self.lbl_sec.bind(done=self.sec_finished)
         self.stage = 0
 
@@ -138,7 +154,9 @@ class FourthScr(Screen):
         txt = Label(text = txt_test3)
 
         self.in_result_2 = TextInput(multiline = False)
+        self.in_result_2.set_disabled(True)
         self.in_result_3 = TextInput(multiline = False)
+        self.in_result_3.set_disabled(True)
 
         main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
         result_2_line = BoxLayout(height = "30sp", size_hint = (0.8, None))
@@ -163,12 +181,12 @@ class FourthScr(Screen):
             if self.stage == 0:
                 self.stage = 1
                 self.txt_need_to_do.text = "Отдыхайте"
-                self.lbl_sec.restart(30)
+                self.lbl_sec.restart(45)#45
                 self.in_result_2.set_disabled(False)
             elif self.stage == 1:
                 self.stage = 2
                 self.txt_need_to_do.text = "Считайте пульс"
-                self.lbl_sec.restart(15)
+                self.lbl_sec.restart(15)#15
             elif self.stage == 2:
                 self.in_result_3.set_disabled(False)
                 self.btn.set_disabled(False)
@@ -206,6 +224,9 @@ class FourthScr(Screen):
                 user_data.result_2 = self.in_result_2
                 user_data.result_3 = self.in_result_3
                 r_index = ruffier_index(int(user_data.result_1.text),int(user_data.result_2.text),int(user_data.result_3.text))
+                user_data.result_1.text = ""
+                user_data.result_2.text = ""
+                user_data.result_3.text = ""
                 user_data.ruf_ind.text += str(r_index)
                 level = neud_level(user_data.age)
                 index_result = ruffier_result(r_index, level)
@@ -240,8 +261,9 @@ class FifthScr(Screen):
         self.add_widget(main_line)
 
     def again(self):
-        u = user_data
-        u.name = u.age =  u.ruf_ind.text = u.ruf_uns.text = u.result_1.text = u.result_2.text = u.result_3.text = ""
+        user_data.ruf_ind = user_data.ruf_uns = user_data.error = user_data.previus = None
+        
+        app.sm.get_screen("second").lbl_sec.restart(15)#15
         self.manager.transition.direction = 'left'
         self.manager.current = 'first'
 
@@ -276,6 +298,7 @@ class MyApp(App):
         sm.add_widget(FourthScr())
         sm.add_widget(FifthScr())
         sm.add_widget(ErrorScr())
+        self.sm = sm
         return sm
 
 app = MyApp()
