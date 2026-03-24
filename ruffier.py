@@ -44,7 +44,6 @@ txt_res.append('''
 
 def ruffier_index(P1, P2, P3):
     ''' возвращает значение индекса по трем показателям пульса для сверки с таблицей'''
-    print(P1, P2, P3)
     return round((4*(P1+P2+P3)-200)/10,1)
 
 def neud_level(age):

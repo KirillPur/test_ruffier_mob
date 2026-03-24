@@ -63,7 +63,9 @@ class SecondScr(Screen):
         self.lbl_sec.bind(done=self.sec_finished)
         self.stage = False
 
-        self.btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
+        self.btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.5),background_color = (0,0.5,0,1))
+        self.btn_fast_end = Button(text="Пропустить таймер",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.5),background_color = (0,0.5,0,1))
+        self.btn_fast_end.set_disabled(True)
         txt = Label(text = txt_test1)
         txt_result = Label(text = "Введите результат:")
 
@@ -72,21 +74,26 @@ class SecondScr(Screen):
 
         main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
         second_line = BoxLayout(height = "30sp", size_hint = (0.8, None))
+        third_line = BoxLayout(padding = 10, spacing = 10)
         self.btn.on_press = self.next
+        self.btn_fast_end.on_press = self.lbl_sec.fast_end
 
         second_line.add_widget(txt_result)
         second_line.add_widget(self.in_result_1)
+        third_line.add_widget(self.btn)
+        third_line.add_widget(self.btn_fast_end)
 
         main_line.add_widget(txt)
         main_line.add_widget(self.lbl_sec)
         main_line.add_widget(second_line)
-        main_line.add_widget(self.btn)
+        main_line.add_widget(third_line)
         self.add_widget(main_line)
 
     def sec_finished(self, *args):
         self.stage = True
         self.in_result_1.set_disabled(False)
         self.btn.set_disabled(False)
+        self.btn_fast_end.set_disabled(True)
         self.btn.text = "Продолжить"
         return False
 
@@ -96,6 +103,7 @@ class SecondScr(Screen):
         if self.stage == False:
             self.in_result_1.set_disabled(True)
             self.btn.set_disabled(True)
+            self.btn_fast_end.set_disabled(False)
             self.lbl_sec.start()
         else:
             if result_1 == False or result_1 < 0:
@@ -105,6 +113,7 @@ class SecondScr(Screen):
                 self.manager.transition.direction = 'down'
                 self.manager.current = 'error'
             else:
+                self.lbl_sec.reset(15)#15
                 user_data.result_1 = self.in_result_1
                 self.manager.current = 'third'
 
@@ -114,28 +123,38 @@ class ThirdScr(Screen):
         self.lbl_sec = Seconds(45)#45
         self.lbl_sec.bind(done=self.sec_finished)
         self.stage = False
-        self.btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
+        self.btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.35, 0.5),background_color = (0,0.5,0,1))
+        self.btn_fast_end = Button(text="Пропустить таймер",pos_hint = {"center_x": 0.5}, size_hint = (0.35, 0.5),background_color = (0,0.5,0,1))
+        self.btn_fast_end.set_disabled(True)
         txt = Label(text = txt_sits)
 
         main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
+        second_line = BoxLayout(padding = 10, spacing = 10)
         self.btn.on_press = self.next
+        self.btn_fast_end.on_press = self.lbl_sec.fast_end
+
+        second_line.add_widget(self.btn)
+        second_line.add_widget(self.btn_fast_end)
 
         main_line.add_widget(txt)
         main_line.add_widget(self.lbl_sec)
-        main_line.add_widget(self.btn)
+        main_line.add_widget(second_line)
         self.add_widget(main_line)
-    
+
     def sec_finished(self, *args):
         self.stage = True
         self.btn.text = "Продолжить"
         self.btn.set_disabled(False)
+        self.btn_fast_end.set_disabled(True)
         return False
 
     def next(self):
         if self.stage == False:
             self.btn.set_disabled(True)
+            self.btn_fast_end.set_disabled(False)
             self.lbl_sec.start()
         else:
+            self.lbl_sec.reset(45)#45
             self.manager.transition.direction = 'left'
             self.manager.current = 'fourth'
 
@@ -146,7 +165,9 @@ class FourthScr(Screen):
         self.lbl_sec.bind(done=self.sec_finished)
         self.stage = 0
 
-        self.btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
+        self.btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.8),background_color = (0,0.5,0,1))
+        self.btn_fast_end = Button(text="Пропустить таймер",pos_hint = {"center_x": 0.5}, size_hint = (0.35, 0.8),background_color = (0,0.5,0,1))
+        self.btn_fast_end.set_disabled(True)
         txt = Label(text = txt_instruction)
         self.txt_need_to_do = Label(text = "Считайте пульс")
         txt_result_2 = Label(text = "Результат:")
@@ -161,21 +182,25 @@ class FourthScr(Screen):
         main_line = BoxLayout(orientation = "vertical", padding = 10, spacing = 10)
         result_2_line = BoxLayout(height = "30sp", size_hint = (0.8, None))
         result_3_line = BoxLayout(height = "30sp", size_hint = (0.8, None))
+        second_line = BoxLayout(padding = 10, spacing = 10)
         self.btn.on_press = self.next
+        self.btn_fast_end.on_press = self.lbl_sec.fast_end
 
         result_2_line.add_widget(txt_result_2)
         result_2_line.add_widget(self.in_result_2)
         result_3_line.add_widget(txt_result_3)
         result_3_line.add_widget(self.in_result_3)
+        second_line.add_widget(self.btn)
+        second_line.add_widget(self.btn_fast_end)
 
         main_line.add_widget(txt)
         main_line.add_widget(self.txt_need_to_do)
         main_line.add_widget(self.lbl_sec)
         main_line.add_widget(result_2_line)
         main_line.add_widget(result_3_line)
-        main_line.add_widget(self.btn)
+        main_line.add_widget(second_line)
         self.add_widget(main_line)
-    
+
     def sec_finished(self, *args):
         if self.lbl_sec.done == True:
             if self.stage == 0:
@@ -190,6 +215,7 @@ class FourthScr(Screen):
             elif self.stage == 2:
                 self.in_result_3.set_disabled(False)
                 self.btn.set_disabled(False)
+                self.btn_fast_end.set_disabled(True)
                 self.btn.text = "Узнать результат"
                 return False
 
@@ -198,8 +224,9 @@ class FourthScr(Screen):
             self.btn.set_disabled(True)
             self.in_result_2.set_disabled(True)
             self.in_result_3.set_disabled(True)
+            self.btn_fast_end.set_disabled(False)
             self.lbl_sec.start()
-        
+
         else:
             result_2 = check_int(self.in_result_2.text)
             result_3 = check_int(self.in_result_3.text)
@@ -253,7 +280,6 @@ class FifthScr(Screen):
         txt_line.add_widget(txt_ruf_index)
         txt_line.add_widget(txt)
         txt_line.add_widget(txt_ruf_unswer)
-        #main_line.add_widget(btn_end)
         second_line.add_widget(btn_again)
         second_line.add_widget(btn_end)
         main_line.add_widget(txt_line)
@@ -263,8 +289,7 @@ class FifthScr(Screen):
     def again(self):
         user_data.ruf_ind.text = ""
         user_data.ruf_uns.text = ""
-        #user_data.previus = None
-        
+
         app.sm.get_screen("second").stage = False
         app.sm.get_screen("second").lbl_sec.reset(15)#15
         app.sm.get_screen("second").btn.text = "Начать"
@@ -273,7 +298,7 @@ class FifthScr(Screen):
         app.sm.get_screen("third").stage = False
         app.sm.get_screen("third").lbl_sec.reset(45)#45
         app.sm.get_screen("third").btn.text = "Начать"
-        
+
         app.sm.get_screen("fourth").stage = False
         app.sm.get_screen("fourth").lbl_sec.reset(15)#15
         app.sm.get_screen("fourth").btn.text = "Начать"

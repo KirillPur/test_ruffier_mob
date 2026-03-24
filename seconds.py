@@ -14,7 +14,7 @@ class Seconds(Label):
     def restart(self, total, **kwargs):
         self.reset(total, **kwargs)
         self.start()
-    
+
     def reset(self, total, **kwargs):
         self.done = False
         self.total = total
@@ -23,10 +23,14 @@ class Seconds(Label):
 
     def start(self):
         Clock.schedule_interval(self.change, 1)
+    
+    def fast_end(self):
+        self.current = self.total - 1
 
     def change(self, dt):
         self.current += 1
         self.text = "Прошло секунд: " + str(self.current)
         if self.current >= self.total:
             self.done = True
+            self.reset(self.total)
             return False
