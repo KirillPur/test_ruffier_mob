@@ -269,7 +269,7 @@ class FifthScr(Screen):
         super().__init__(name=name)
         btn_end = Button(text="Завершить",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.35),background_color = (0,0.5,0,1))
         btn_again = Button(text="Начать сначала",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.35),background_color = (0,0.5,0,1))
-        user_data.name = txt_name = Label(text = "Имя пользователя небыло указано")
+        user_data.name = txt_name = Label(text = "")
         user_data.ruf_ind = txt_ruf_index = Label(text = "Ваш индекс Руфье:")
         txt = Label(text = "Работоспособность сердца:")
         user_data.ruf_uns = txt_ruf_unswer = Label(text = "...")
