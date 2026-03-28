@@ -52,7 +52,7 @@ class FirstScr(Screen):
 
     def next(self):
         self.manager.transition.direction = 'left'
-        user_data.name = self.in_name.text
+        user_data.name.text = self.in_name.text
         user_data.age = self.in_age.text
         self.manager.current = 'second'
 
@@ -258,6 +258,8 @@ class FourthScr(Screen):
                 level = neud_level(user_data.age)
                 index_result = ruffier_result(r_index, level)
                 user_data.ruf_uns.text = txt_res[index_result]
+                #if txt_name.text is None:
+                #    txt_name.text = "Имя пользователя небыло указано"
 
                 self.manager.transition.direction = 'left'
                 self.manager.current = 'fifth'
@@ -265,8 +267,9 @@ class FourthScr(Screen):
 class FifthScr(Screen):
     def __init__(self, name='fifth'):
         super().__init__(name=name)
-        btn_end = Button(text="Завершить",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
-        btn_again = Button(text="Начать сначала",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
+        btn_end = Button(text="Завершить",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.35),background_color = (0,0.5,0,1))
+        btn_again = Button(text="Начать сначала",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.35),background_color = (0,0.5,0,1))
+        user_data.name = txt_name = Label(text = "Имя пользователя небыло указано")
         user_data.ruf_ind = txt_ruf_index = Label(text = "Ваш индекс Руфье:")
         txt = Label(text = "Работоспособность сердца:")
         user_data.ruf_uns = txt_ruf_unswer = Label(text = "...")
@@ -276,12 +279,14 @@ class FifthScr(Screen):
         second_line = BoxLayout(padding = 10, spacing = 10)
         btn_again.on_press = self.again
         btn_end.on_press = self.exit
+        
 
         txt_line.add_widget(txt_ruf_index)
         txt_line.add_widget(txt)
         txt_line.add_widget(txt_ruf_unswer)
         second_line.add_widget(btn_again)
         second_line.add_widget(btn_end)
+        main_line.add_widget(txt_name)
         main_line.add_widget(txt_line)
         main_line.add_widget(second_line)
         self.add_widget(main_line)
