@@ -279,7 +279,6 @@ class FifthScr(Screen):
         second_line = BoxLayout(padding = 10, spacing = 10)
         btn_again.on_press = self.again
         btn_end.on_press = self.exit
-        
 
         txt_line.add_widget(txt_ruf_index)
         txt_line.add_widget(txt)
