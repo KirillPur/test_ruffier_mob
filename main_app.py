@@ -259,7 +259,6 @@ class FourthScr(Screen):
                 index_result = ruffier_result(r_index, level)
                 user_data.ruf_uns.text = txt_res[index_result]
                 #if txt_name.text is None:
-                #    txt_name.text = "Имя пользователя небыло указано"
 
                 self.manager.transition.direction = 'left'
                 self.manager.current = 'fifth'
