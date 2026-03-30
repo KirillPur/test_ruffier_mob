@@ -11,7 +11,7 @@ from seconds import *
 #from runner import*
 from kivy.core.window import Window
 #from sits import*
-Window.size = (450,800)
+#Window.size = (450,800)
 class UserData():
     name = age = ruf_ind = ruf_uns = error = previus = result_1 = result_2 = result_3 = None
 user_data = UserData()
@@ -26,10 +26,9 @@ class FirstScr(Screen):
     def __init__(self, name='first'):
         super().__init__(name=name)
         btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.2),background_color = (0,0.5,0,1))
-        txt = Label(text = txt_instruction)
+        txt = Label(text = txt_instruction, text_size = (525, None))
         txt_name = Label(text = "Введите имя:")
         txt_age = Label(text = "Введите возраст:")
-        txt = Label(text = txt_instruction)
 
         self.in_name = TextInput(multiline = False)
         self.in_age = TextInput(text = "7", multiline = False)
@@ -168,11 +167,10 @@ class FourthScr(Screen):
         self.btn = Button(text="Начать",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.8),background_color = (0,0.5,0,1))
         self.btn_fast_end = Button(text="Пропустить таймер",pos_hint = {"center_x": 0.5}, size_hint = (0.35, 0.8),background_color = (0,0.5,0,1))
         self.btn_fast_end.set_disabled(True)
-        txt = Label(text = txt_instruction)
         self.txt_need_to_do = Label(text = "Считайте пульс")
         txt_result_2 = Label(text = "Результат:")
         txt_result_3 = Label(text = "Результат после отдыха:")
-        txt = Label(text = txt_test3)
+        txt = Label(text = txt_test3, text_size = (500, None))
 
         self.in_result_2 = TextInput(multiline = False)
         self.in_result_2.set_disabled(True)
@@ -270,6 +268,7 @@ class FifthScr(Screen):
         btn_again = Button(text="Начать сначала",pos_hint = {"center_x": 0.5}, size_hint = (0.3, 0.35),background_color = (0,0.5,0,1))
         user_data.name = txt_name = Label(text = "")
         user_data.ruf_ind = txt_ruf_index = Label(text = "Ваш индекс Руфье:")
+        txt_space = Label(text = "")
         txt = Label(text = "Работоспособность сердца:")
         user_data.ruf_uns = txt_ruf_unswer = Label(text = "...")
 
@@ -280,6 +279,7 @@ class FifthScr(Screen):
         btn_end.on_press = self.exit
 
         txt_line.add_widget(txt_ruf_index)
+        txt_line.add_widget(txt_space)
         txt_line.add_widget(txt)
         txt_line.add_widget(txt_ruf_unswer)
         second_line.add_widget(btn_again)
